@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horeca Display</title>
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
 
     <!-- Import Vue 3 Production Build from CDN -->
     <script src="https://unpkg.com/vue@3.2.21"></script>
@@ -115,8 +116,8 @@
                 <li v-for="location in locations" :key="location.id">
                     <h3>{{ location.name }}</h3>
                     <p>Openingstijden: {{ location.opening_times_start }} - {{ location.opening_times_end }}</p>
-                    <p v-if="location.is_open">Open: <span class="icon">&#x2714;</span></p>
-                    <p v-else>Open: <span class="icon">❌</span></p>
+                    <p v-if="location.is_open">Open: <span class="icon" style="color: greenyellow;"><i class="fa-solid fa-check"></i></span></p>
+                    <p v-else>Open: <span class="icon" style="color: red;"><i class="fa-solid fa-xmark"></i></span></p>
                 </li>
             </ul>
         </div>
