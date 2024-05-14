@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Park Sluitingstijd</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: 'herculanum roman';
+      font-size: 5rem;
+      color: #FFD966;
+      display: inline-block;
+      -webkit-text-stroke: 0.3rem #FFFFFF;
+      text-stroke: 0.3rem #FFFFFF;
+      text-shadow: 0 0 0.3rem #FFFFFF, 0 0 0.3rem #FFFFFF, 0 0 0.3rem #FFFFFF, 0 0 0.3rem #FFFFFF;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="closing-time"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    async function fetchAndDisplayClosingTime() {
+      try {
+        const response = await axios.get('https://portal.toverland.nl/api/opening_times/today/?format=json', {
+          headers: {
+            'Authorization': 'Bearer 19e1e644d42d1d9028f39bc295bb5b3148faa2e2'
+          }
+        });
+
+        console.log('API-respons:', response.data); 
+
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const openingTimes = response.data[0];
+
+          if (openingTimes && openingTimes.closing_time) {
+            const closingTime = openingTimes.closing_time;
+
+            const formattedClosingTime = closingTime.slice(0, -3); 
+
+            const closingTimeElement = document.getElementById('closing-time');
+            if (closingTimeElement) {
+              closingTimeElement.textContent = formattedClosingTime;
+            } else {
+              console.error('Kon het element niet vinden om de sluitingstijd weer te geven.');
+            }
+          } else {
+            console.error('Sluitingstijd niet gevonden in het object.');
+          }
+        } else {
+          console.error('Ongeldige API-respons: geen geldige array met openingstijden gevonden.');
+        }
+      } catch (error) {
+        console.error('Fout bij ophalen van sluitingstijd:', error.message);
+      }
+    }
+
+    fetchAndDisplayClosingTime();
+
+    setInterval(fetchAndDisplayClosingTime, 60000); 
+  </script>
+</body>
+</html>
