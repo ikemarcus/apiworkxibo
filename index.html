@@ -11,14 +11,65 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+        /* Reset default margin and padding */
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+        }
 
-        * {
+        /* Apply Ubuntu font to all elements */
+        body {
             font-family: 'Ubuntu', sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
         }
 
         .icon {
-            font-size: 0.8rem;
+            font-size: 1rem;
+            margin-right: 5px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        /* Loading animation */
+        .loading {
+            font-style: italic;
+            color: #777;
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -28,7 +79,7 @@
         <div v-if="parkOpeningTimes">
             <p>Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}</p>
         </div>
-        <p v-else>Loading park opening hours...</p>   
+        <p v-else class="loading">Park openingstijden laden...</p>
 
         <h2>Openingstijden Horeca Locaties</h2>
         <div v-if="locations.length > 0">
@@ -41,7 +92,7 @@
                 </li>
             </ul>
         </div>
-        <p v-else>Loading opening hours...</p>
+        <p v-else class="loading">Openingstijden laden...</p>
     </div>
 
     <script>
