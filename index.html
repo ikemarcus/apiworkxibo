@@ -30,6 +30,7 @@
             font-weight: 700;
             font-size: 2rem;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         h2 {
@@ -37,6 +38,7 @@
             font-size: 1.5rem;
             margin-top: 30px;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         h3 {
@@ -48,6 +50,7 @@
         .icon {
             font-size: 1rem;
             margin-right: 5px;
+            vertical-align: middle;
         }
 
         ul {
@@ -58,6 +61,12 @@
         li {
             border-bottom: 1px solid #ddd;
             padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px);
         }
 
         li:last-child {
@@ -77,7 +86,7 @@
     <div id="app">
         <h1>Openingstijden Park (vandaag)</h1>
         <div v-if="parkOpeningTimes">
-            <p>Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}</p>
+            <p style="text-align: center;">Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}</p>
         </div>
         <p v-else class="loading">Park openingstijden laden...</p>
 
@@ -118,7 +127,6 @@
                                 open: parkToday.opening_time,
                                 close: parkToday.closing_time
                             };
-                            console.log('Park Opening Times:', this.parkOpeningTimes);
                         } else {
                             console.error('No park opening times available for today.');
                         }
@@ -141,7 +149,6 @@
                             opening_times_end: location.opening_times_end,
                             is_open: location.is_open,
                         }));
-                        console.log('Horeca Locations:', this.locations);
                     })
                     .catch(error => {
                         console.error('Error fetching Horeca data:', error);
