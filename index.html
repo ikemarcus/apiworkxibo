@@ -116,7 +116,7 @@
                 <li v-for="location in locations" :key="location.id">
                     <h3>{{ location.name }}</h3>
                     <p>Openingstijden: {{ location.opening_times_start }} - {{ location.opening_times_end }}</p>
-                    <p v-if="location.is_open">Open: <span class="icon" style="color: greenyellow;"><i class="fa-solid fa-check"></i></span></p>
+                    <p v-if="location.is_open">Open: <span class="icon" style="color: green;"><i class="fa-solid fa-check"></i></span></p>
                     <p v-else>Open: <span class="icon" style="color: red;"><i class="fa-solid fa-xmark"></i></span></p>
                 </li>
             </ul>
