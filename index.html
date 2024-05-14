@@ -1,73 +1,113 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Park Sluitingstijd</title>
-  <style>
-    @font-face {
-        font-family: 'Herculanum';
-        src: url('Herculanum.ttf') format('truetype'); 
-        font-weight: normal;
-        font-style: normal;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horeca Display</title>
 
-    body {
-      text-align: center;
-      font-family: 'herculanum', sans-serif;
-      font-size: 25rem;
-      color: #FFD966;
-      display: inline-block;
-      -webkit-text-stroke: 0.3rem #FFFFFF;
-      text-stroke: 0.3rem #FFFFFF;
-      text-shadow: 0 0 0.3rem #FFFFFF, 0 0 0.3rem #FFFFFF, 0 0 0.3rem #FFFFFF, 0 0 0.3rem #FFFFFF;
-      font-weight: bold;
-      background-color: black;
-    }
-  </style>
+    <!-- Import Vue 3 Production Build from CDN -->
+    <script src="https://unpkg.com/vue@3.2.21"></script>
+    <!-- Import Axios for making HTTP requests -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+        * {
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .icon {
+            font-size: 0.8rem;
+        }
+    </style>
 </head>
 <body>
-  <div id="closing-time"></div>
+    <div id="app">
+        <h1>Openingstijden Park (vandaag)</h1>
+        <div v-if="parkOpeningTimes">
+            <p>Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}</p>
+        </div>
+        <p v-else>Loading park opening hours...</p>   
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
-    async function fetchAndDisplayClosingTime() {
-      try {
-        const response = await axios.get('https://portal.toverland.nl/api/opening_times/today/?format=json', {
-          headers: {
-            'Authorization': 'Bearer 19e1e644d42d1d9028f39bc295bb5b3148faa2e2'
-          }
+        <h2>Openingstijden Horeca Locaties</h2>
+        <div v-if="locations.length > 0">
+            <ul>
+                <li v-for="location in locations" :key="location.id">
+                    <h3>{{ location.name }}</h3>
+                    <p>Openingstijden: {{ location.opening_times_start }} - {{ location.opening_times_end }}</p>
+                    <p v-if="location.is_open">Open: <span class="icon">✔️</span></p>
+                    <p v-else>Open: <span class="icon">❌</span></p>
+                </li>
+            </ul>
+        </div>
+        <p v-else>Loading opening hours...</p>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    locations: [],
+                    parkOpeningTimes: null
+                };
+            },
+            mounted() {
+                const fetchOpeningHours = () => {
+                    // Fetch park opening hours for today
+                    axios.get('https://portal.toverland.nl/api/opening_times/today/?format=json', {
+                        headers: {
+                            'Authorization': 'Bearer 19e1e644d42d1d9028f39bc295bb5b3148faa2e2'
+                        }
+                    })
+                    .then(response => {
+                        if (response.data.length > 0) {
+                            const parkToday = response.data[0];
+                            this.parkOpeningTimes = {
+                                open: parkToday.opening_time,
+                                close: parkToday.closing_time
+                            };
+                            console.log('Park Opening Times:', this.parkOpeningTimes);
+                        } else {
+                            console.error('No park opening times available for today.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching park opening hours for today:', error);
+                    });
+
+                    // Fetch horeca locations data
+                    axios.get('https://portal.toverland.nl/api/horeca/?format=json', {
+                        headers: {
+                            'Authorization': 'Bearer 19e1e644d42d1d9028f39bc295bb5b3148faa2e2'
+                        }
+                    })
+                    .then(response => {
+                        this.locations = response.data.map(location => ({
+                            id: location.id,
+                            name: location.name,
+                            opening_times_start: location.opening_times_start,
+                            opening_times_end: location.opening_times_end,
+                            is_open: location.is_open,
+                        }));
+                        console.log('Horeca Locations:', this.locations);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Horeca data:', error);
+                    });
+                };
+
+                // Call fetchOpeningHours initially
+                fetchOpeningHours();
+
+                // Set interval to fetch updated data every minute
+                setInterval(() => {
+                    fetchOpeningHours();
+                }, 60000); // 60000 milliseconds = 1 minute
+            }
         });
 
-        console.log('API-respons:', response.data); 
-
-        if (Array.isArray(response.data) && response.data.length > 0) {
-          const openingTimes = response.data[0];
-
-          if (openingTimes && openingTimes.closing_time) {
-            const closingTime = openingTimes.closing_time;
-
-            const formattedClosingTime = closingTime.slice(0, -3); 
-
-            const closingTimeElement = document.getElementById('closing-time');
-            if (closingTimeElement) {
-              closingTimeElement.textContent = formattedClosingTime;
-            } else {
-              console.error('Kon het element niet vinden om de sluitingstijd weer te geven.');
-            }
-          } else {
-            console.error('Sluitingstijd niet gevonden in het object.');
-          }
-        } else {
-          console.error('Ongeldige API-respons: geen geldige array met openingstijden gevonden.');
-        }
-      } catch (error) {
-        console.error('Fout bij ophalen van sluitingstijd:', error.message);
-      }
-    }
-
-    fetchAndDisplayClosingTime();
-
-    setInterval(fetchAndDisplayClosingTime, 60000); 
-  </script>
+        const vm = app.mount('#app');
+    </script>
 </body>
 </html>
