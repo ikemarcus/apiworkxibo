@@ -143,5 +143,19 @@
 
     <!-- Vue.js script -->
     <script src="app.js"></script>
+    <script>
+        // Event handler function to disable Ctrl+U
+        function disableCtrlU(e) {
+            // Check if the key pressed is 'u' and Ctrl key is also pressed
+            if (e.ctrlKey && e.key === 'u') {
+                // Prevent default behavior (view source)
+                e.preventDefault();
+                alert("Ctrl+U is disabled on this page.");
+            }
+        }
+    
+        // Attach event listener to capture keydown events
+        document.addEventListener('keydown', disableCtrlU);
+    </script>
 </body>
 </html>
