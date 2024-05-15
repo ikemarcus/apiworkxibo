@@ -6,8 +6,32 @@ const app = Vue.createApp({
             parkLoadingError: false,
             locationsLoadingError: false,
             showParkLoadingMessage: true,
-            showLocationsLoadingMessage: true
+            showLocationsLoadingMessage: true,
+            selectedArea: '', // Houdt geselecteerde gebied voor sorteren bij
         };
+    },
+    computed: {
+        filteredLocations() {
+            if (!this.selectedArea) {
+                return this.locations; // Geen filter toegepast
+            } else {
+                // Filter locaties op geselecteerde gebied
+                return this.locations.filter(location => {
+                    // Mapping van gebieden naar bijbehorende IDs
+                    const areaMappings = {
+                        'Magische Vallei': [4, 11, 10],
+                        'Land van Toos': [8],
+                        'Avalon': [15, 1],
+                        'Ithaka': [3, 12],
+                        'Port Laguna': [13, 5, 6],
+                        'Wunderwald': [2, 14, 9, 7],
+                    };
+
+                    // Controleer of het huidige gebied overeenkomt met de geselecteerde
+                    return areaMappings[this.selectedArea].includes(location.id);
+                });
+            }
+        },
     },
     mounted() {
         const fetchOpeningHours = () => {
