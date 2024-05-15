@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magische Tijden Horeca</title>
+    <link rel="icon" href="hat-wizard-solid.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Import Vue 3 Production Build from CDN -->
+    <script src="https://unpkg.com/vue@3.2.21"></script>
+    <!-- Import Axios for making HTTP requests -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <style>
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            color: #333;
+            padding: 20px;
+            overflow-y: scroll; 
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        h3 {
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            padding-left: 3px;
+            vertical-align: middle;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        li:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px);
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .loading {
+            font-style: italic;
+            color: #777;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .zoeken {
+            margin-left: 15px;
+        }
+
+        .filtergebieden {
+            padding: 1px;
+        }
+
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 5px;
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Park opening times section -->
+        <h1>Openingstijden Park (vandaag)</h1>
+        <div v-if="showParkLoadingMessage">
+            <p class="loading">Park openingstijden laden...</p>
+        </div>
+        <div v-else-if="parkOpeningTimes || parkLoadingError">
+            <p v-if="parkLoadingError" class="loading">Helaas, park openingstijden konden niet worden geladen.</p>
+            <p v-else-if="parkOpeningTimes" style="text-align: center;">
+                Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}
+            </p>
+        </div>
+
+        <!-- Horeca opening times section -->
+        <h2>Openingstijden Horeca Locaties</h2>
+        <select v-model="selectedArea" class="filtergebieden">
+            <option value="">Sorteer op gebied</option>
+            <option value="">Alle gebieden</option>
+            <option value="Magische Vallei">Magische Vallei</option>
+            <option value="Land van Toos">Land van Toos</option>
+            <option value="Avalon">Avalon</option>
+            <option value="Ithaka">Ithaka</option>
+            <option value="Port Laguna">Port Laguna</option>
+            <option value="Wunderwald">Wunderwald</option>
+        </select>
+
+        <!-- Zoekveld voor locaties -->
+        <input class="zoeken" type="text" v-model="searchText" placeholder="Zoek locatie...">
+
+        <div v-if="showLocationsLoadingMessage">
+            <p class="loading">Openingstijden laden...</p>
+        </div>
+        <div v-else-if="filteredLocations && filteredLocations.length > 0">
+            <ul>
+                <li v-for="location in filteredLocations" :key="location.id">
+                    <h3>{{ location.name }}</h3>
+                    <p>Openingstijden: {{ location.opening_times_start }} - {{ location.opening_times_end }}</p>
+                    <p v-if="location.is_open">
+                        Open: <span class="icon" style="color: green;"><i class="fa-solid fa-check"></i></span>
+                    </p>
+                    <p v-else>
+                        Open: <span class="icon" style="color: red;"><i class="fa-solid fa-xmark"></i></span>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div v-else>
+            <p class="loading">Geen horecalocaties beschikbaar voor dit gebied.</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function disableCtrlU(e) {
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                alert("Ctrl+U is disabled on this page.");
+            }
+        }
+    
+        document.addEventListener('keydown', disableCtrlU);
+    </script>
+</body>
+</html>
