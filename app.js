@@ -7,17 +7,15 @@ const app = Vue.createApp({
             locationsLoadingError: false,
             showParkLoadingMessage: true,
             showLocationsLoadingMessage: true,
-            selectedArea: '', // Initialiseer met een lege string
+            selectedArea: '', 
         };
     },
     computed: {
         filteredLocations() {
             if (!this.selectedArea) {
-                return this.locations; // Geen filter toegepast
+                return this.locations; 
             } else {
-                // Filter locaties op geselecteerde gebied
                 return this.locations.filter(location => {
-                    // Mapping van gebieden naar bijbehorende IDs
                     const areaMappings = {
                         'Magische Vallei': [4, 11, 10],
                         'Land van Toos': [8],
@@ -27,7 +25,6 @@ const app = Vue.createApp({
                         'Wunderwald': [2, 14, 9, 7],
                     };
 
-                    // Controleer of het huidige gebied overeenkomt met de geselecteerde
                     return areaMappings[this.selectedArea]?.includes(location.id);
                 });
             }
@@ -35,7 +32,6 @@ const app = Vue.createApp({
     },
     mounted() {
         const fetchOpeningHours = () => {
-            // Fetch park opening hours for today
             axios.get('https://portal.toverland.nl/api/opening_times/today/?format=json', {
                 headers: {
                     'Authorization': 'Bearer 19e1e644d42d1d9028f39bc295bb5b3148faa2e2'
@@ -47,16 +43,15 @@ const app = Vue.createApp({
                     open: parkToday.opening_time,
                     close: parkToday.closing_time
                 };
-                this.parkLoadingError = false; // Reset error state
-                this.showParkLoadingMessage = false; // Hide loading message
+                this.parkLoadingError = false; 
+                this.showParkLoadingMessage = false; 
             })
             .catch(error => {
                 console.error('Error fetching park opening hours for today:', error);
-                this.parkLoadingError = true; // Set error state
-                this.showParkLoadingMessage = false; // Hide loading message
+                this.parkLoadingError = true; 
+                this.showParkLoadingMessage = false; 
             });
 
-            // Fetch horeca locations data
             axios.get('https://portal.toverland.nl/api/horeca/?format=json', {
                 headers: {
                     'Authorization': 'Bearer 19e1e644d42d1d9028f39bc295bb5b3148faa2e2'
@@ -70,25 +65,23 @@ const app = Vue.createApp({
                     opening_times_end: location.opening_times_end,
                     is_open: location.is_open,
                 }));
-                this.locationsLoadingError = false; // Reset error state
-                this.showLocationsLoadingMessage = false; // Hide loading message
+                this.locationsLoadingError = false; 
+                this.showLocationsLoadingMessage = false; 
             })
             .catch(error => {
                 console.error('Error fetching Horeca data:', error);
-                this.locationsLoadingError = true; // Set error state
-                this.showLocationsLoadingMessage = false; // Hide loading message
+                this.locationsLoadingError = true; 
+                this.showLocationsLoadingMessage = false; 
             });
         };
 
-        // Call fetchOpeningHours after 15 seconds delay
         setTimeout(() => {
             fetchOpeningHours();
 
-            // Set interval to fetch updated data every minute
             setInterval(() => {
                 fetchOpeningHours();
-            }, 60000); // 60000 milliseconds = 1 minute
-        }, 5000); // 5000 milliseconds = 15 seconds delay
+            }, 60000); 
+        }, 5000); 
     }
 });
 
