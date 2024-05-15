@@ -8,7 +8,7 @@ const app = Vue.createApp({
             showParkLoadingMessage: true,
             showLocationsLoadingMessage: true,
             selectedArea: '',
-            searchText: '', // Ensure searchText is defined
+            searchText: '',
         };
     },
     computed: {
