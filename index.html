@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,9 +17,9 @@
         }
 
         .login-container {
-            background-color: #fff;
+            background-color: #ffffff;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 40px;
             width: 400px;
             max-width: 90%;
@@ -35,19 +35,23 @@
         label {
             font-weight: bold;
             color: #555;
+            margin-bottom: 8px;
+            display: block;
         }
 
         input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
         }
 
         button {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: 5px;
             background-color: #007bff;
@@ -55,6 +59,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            font-size: 16px;
         }
 
         button:hover {
@@ -75,17 +80,18 @@
     </style>
 </head>
 <body>
-    <div id="loginForm">
-        <form @submit.prevent="login">
+    <div class="login-container">
+        <h2>Inloggen</h2>
+        <form @submit.prevent="login" novalidate>
             <label for="username">Gebruikersnaam:</label>
-            <input type="text" id="username" v-model="username" required><br><br>
+            <input type="text" id="username" v-model="username" required>
             
             <label for="password">Wachtwoord:</label>
-            <input type="password" id="password" v-model="password" required><br><br>
+            <input type="password" id="password" v-model="password" required>
             
             <button type="submit">Inloggen</button>
             
-            <p v-if="loginError" style="color: red;">Ongeldige gebruikersnaam of wachtwoord.</p>
+            <p v-if="loginError" class="alert alert-danger">Ongeldige gebruikersnaam of wachtwoord.</p>
         </form>
     </div>
 
