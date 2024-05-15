@@ -120,7 +120,7 @@
                 Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}
             </p>
         </div>
-    
+
         <!-- Horeca opening times section -->
         <h2>Openingstijden Horeca Locaties</h2>
         <select v-model="selectedArea" class="filtergebieden">
@@ -133,10 +133,10 @@
             <option value="Port Laguna">Port Laguna</option>
             <option value="Wunderwald">Wunderwald</option>
         </select>
-    
+
         <!-- Zoekveld voor locaties -->
         <input class="zoeken" type="text" v-model="searchText" placeholder="Zoek locatie...">
-    
+
         <div v-if="showLocationsLoadingMessage">
             <p class="loading">Openingstijden laden...</p>
         </div>
