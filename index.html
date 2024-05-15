@@ -119,15 +119,25 @@
 
         <!-- Horeca opening times section -->
         <h2>Openingstijden Horeca Locaties</h2>
+        <select v-model="selectedArea">
+            <option value="">Sorteer op gebied</option>
+            <option value="Magische Vallei">Magische Vallei</option>
+            <option value="Land van Toos">Land van Toos</option>
+            <option value="Avalon">Avalon</option>
+            <option value="Ithaka">Ithaka</option>
+            <option value="Port Laguna">Port Laguna</option>
+            <option value="Wunderwald">Wunderwald</option>
+        </select>
+        
         <div v-if="showLocationsLoadingMessage">
             <p class="loading">Openingstijden laden...</p>
         </div>
-        <div v-else-if="locations.length > 0 || locationsLoadingError">
+        <div v-else-if="filteredLocations.length > 0 || locationsLoadingError">
             <ul v-if="locationsLoadingError" class="loading">
                 Helaas, openingstijden van horeca locaties konden niet worden geladen.
             </ul>
-            <ul v-else-if="locations.length > 0">
-                <li v-for="location in locations" :key="location.id">
+            <ul v-else-if="filteredLocations.length > 0">
+                <li v-for="location in filteredLocations" :key="location.id">
                     <h3>{{ location.name }}</h3>
                     <p>Openingstijden: {{ location.opening_times_start }} - {{ location.opening_times_end }}</p>
                     <p v-if="location.is_open">
