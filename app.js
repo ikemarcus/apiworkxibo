@@ -7,7 +7,7 @@ const app = Vue.createApp({
             locationsLoadingError: false,
             showParkLoadingMessage: true,
             showLocationsLoadingMessage: true,
-            selectedArea: '', // Houdt geselecteerde gebied voor sorteren bij
+            selectedArea: '', // Initialiseer met een lege string
         };
     },
     computed: {
@@ -28,7 +28,7 @@ const app = Vue.createApp({
                     };
 
                     // Controleer of het huidige gebied overeenkomt met de geselecteerde
-                    return areaMappings[this.selectedArea].includes(location.id);
+                    return areaMappings[this.selectedArea]?.includes(location.id);
                 });
             }
         },
