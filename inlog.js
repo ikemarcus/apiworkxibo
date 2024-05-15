@@ -25,4 +25,4 @@ const app = Vue.createApp({
     }
 });
 
-app.mount('#loginForm');
+app.mount('.login-container');
