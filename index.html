@@ -105,32 +105,53 @@
 </head>
 <body>
     <div id="app">
+        <!-- Park opening times section -->
         <h1>Openingstijden Park (vandaag)</h1>
-        <div v-if="parkOpeningTimes">
-            <p style="text-align: center;">Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}</p>
+        <div v-if="showParkLoadingMessage">
+            <p class="loading">Park openingstijden laden...</p>
         </div>
-        <p v-else class="loading">Park openingstijden laden...</p>
+        <div v-else-if="parkOpeningTimes || parkLoadingError">
+            <p v-if="parkLoadingError" class="loading">Helaas, park openingstijden konden niet worden geladen.</p>
+            <p v-else-if="parkOpeningTimes" style="text-align: center;">
+                Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}
+            </p>
+        </div>
 
+        <!-- Horeca opening times section -->
         <h2>Openingstijden Horeca Locaties</h2>
-        <div v-if="locations.length > 0">
-            <ul>
+        <div v-if="showLocationsLoadingMessage">
+            <p class="loading">Openingstijden laden...</p>
+        </div>
+        <div v-else-if="locations.length > 0 || locationsLoadingError">
+            <ul v-if="locationsLoadingError" class="loading">
+                Helaas, openingstijden van horeca locaties konden niet worden geladen.
+            </ul>
+            <ul v-else-if="locations.length > 0">
                 <li v-for="location in locations" :key="location.id">
                     <h3>{{ location.name }}</h3>
                     <p>Openingstijden: {{ location.opening_times_start }} - {{ location.opening_times_end }}</p>
-                    <p v-if="location.is_open">Open: <span class="icon" style="color: green;"><i class="fa-solid fa-check"></i></span></p>
-                    <p v-else>Open: <span class="icon" style="color: red;"><i class="fa-solid fa-xmark"></i></span></p>
+                    <p v-if="location.is_open">
+                        Open: <span class="icon" style="color: green;"><i class="fa-solid fa-check"></i></span>
+                    </p>
+                    <p v-else>
+                        Open: <span class="icon" style="color: red;"><i class="fa-solid fa-xmark"></i></span>
+                    </p>
                 </li>
             </ul>
         </div>
-        <p v-else class="loading">Openingstijden laden...</p>
     </div>
 
+    <!-- Vue.js script -->
     <script>
         const app = Vue.createApp({
             data() {
                 return {
                     locations: [],
-                    parkOpeningTimes: null
+                    parkOpeningTimes: null,
+                    parkLoadingError: false,
+                    locationsLoadingError: false,
+                    showParkLoadingMessage: true,
+                    showLocationsLoadingMessage: true
                 };
             },
             mounted() {
@@ -142,18 +163,18 @@
                         }
                     })
                     .then(response => {
-                        if (response.data.length > 0) {
-                            const parkToday = response.data[0];
-                            this.parkOpeningTimes = {
-                                open: parkToday.opening_time,
-                                close: parkToday.closing_time
-                            };
-                        } else {
-                            console.error('No park opening times available for today.');
-                        }
+                        const parkToday = response.data[0];
+                        this.parkOpeningTimes = {
+                            open: parkToday.opening_time,
+                            close: parkToday.closing_time
+                        };
+                        this.parkLoadingError = false; // Reset error state
+                        this.showParkLoadingMessage = false; // Hide loading message
                     })
                     .catch(error => {
                         console.error('Error fetching park opening hours for today:', error);
+                        this.parkLoadingError = true; // Set error state
+                        this.showParkLoadingMessage = false; // Hide loading message
                     });
 
                     // Fetch horeca locations data
@@ -170,19 +191,25 @@
                             opening_times_end: location.opening_times_end,
                             is_open: location.is_open,
                         }));
+                        this.locationsLoadingError = false; // Reset error state
+                        this.showLocationsLoadingMessage = false; // Hide loading message
                     })
                     .catch(error => {
                         console.error('Error fetching Horeca data:', error);
+                        this.locationsLoadingError = true; // Set error state
+                        this.showLocationsLoadingMessage = false; // Hide loading message
                     });
                 };
 
-                // Call fetchOpeningHours initially
-                fetchOpeningHours();
-
-                // Set interval to fetch updated data every minute
-                setInterval(() => {
+                // Call fetchOpeningHours after 15 seconds delay
+                setTimeout(() => {
                     fetchOpeningHours();
-                }, 60000); // 60000 milliseconds = 1 minute
+
+                    // Set interval to fetch updated data every minute
+                    setInterval(() => {
+                        fetchOpeningHours();
+                    }, 60000); // 60000 milliseconds = 1 minute
+                }, 5000); // 5000 milliseconds = 15 seconds delay
             }
         });
 
