@@ -7,27 +7,27 @@ const app = Vue.createApp({
             locationsLoadingError: false,
             showParkLoadingMessage: true,
             showLocationsLoadingMessage: true,
-            selectedArea: '', 
+            selectedArea: '',
+            searchText: '',
         };
     },
     computed: {
         filteredLocations() {
-            if (!this.selectedArea) {
-                return this.locations; 
-            } else {
-                return this.locations.filter(location => {
-                    const areaMappings = {
-                        'Magische Vallei': [4, 11, 10],
-                        'Land van Toos': [8],
-                        'Avalon': [15, 1],
-                        'Ithaka': [3, 12],
-                        'Port Laguna': [13, 5, 6],
-                        'Wunderwald': [2, 14, 9, 7],
-                    };
+            return this.locations.filter(location => {
+                const areaMappings = {
+                    'Magische Vallei': [4, 11, 10],
+                    'Land van Toos': [8],
+                    'Avalon': [15, 1],
+                    'Ithaka': [3, 12],
+                    'Port Laguna': [13, 5, 6],
+                    'Wunderwald': [2, 14, 9, 7],
+                };
 
-                    return areaMappings[this.selectedArea]?.includes(location.id);
-                });
-            }
+                const isInSelectedArea = !this.selectedArea || areaMappings[this.selectedArea]?.includes(location.id);
+                const matchesSearchText = !this.searchText || location.name.toLowerCase().includes(this.searchText.toLowerCase());
+
+                return isInSelectedArea && matchesSearchText;
+            });
         },
     },
     mounted() {
@@ -43,13 +43,13 @@ const app = Vue.createApp({
                     open: parkToday.opening_time,
                     close: parkToday.closing_time
                 };
-                this.parkLoadingError = false; 
-                this.showParkLoadingMessage = false; 
+                this.parkLoadingError = false;
+                this.showParkLoadingMessage = false;
             })
             .catch(error => {
                 console.error('Error fetching park opening hours for today:', error);
-                this.parkLoadingError = true; 
-                this.showParkLoadingMessage = false; 
+                this.parkLoadingError = true;
+                this.showParkLoadingMessage = false;
             });
 
             axios.get('https://portal.toverland.nl/api/horeca/?format=json', {
@@ -65,13 +65,13 @@ const app = Vue.createApp({
                     opening_times_end: location.opening_times_end,
                     is_open: location.is_open,
                 }));
-                this.locationsLoadingError = false; 
-                this.showLocationsLoadingMessage = false; 
+                this.locationsLoadingError = false;
+                this.showLocationsLoadingMessage = false;
             })
             .catch(error => {
                 console.error('Error fetching Horeca data:', error);
-                this.locationsLoadingError = true; 
-                this.showLocationsLoadingMessage = false; 
+                this.locationsLoadingError = true;
+                this.showLocationsLoadingMessage = false;
             });
         };
 
@@ -80,8 +80,8 @@ const app = Vue.createApp({
 
             setInterval(() => {
                 fetchOpeningHours();
-            }, 60000); 
-        }, 5000); 
+            }, 60000);
+        }, 5000);
     }
 });
 
