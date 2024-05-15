@@ -13,20 +13,18 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <style>
-        /* Reset default margin and padding */
         body, h1, h2, h3, p, ul, li {
             margin: 0;
             padding: 0;
         }
 
-        /* Apply Ubuntu font to all elements */
         body {
             font-family: 'Ubuntu', sans-serif;
             line-height: 1.6;
             background-color: #f8f9fa;
             color: #333;
             padding: 20px;
-            overflow-y: scroll; /* Ensure scrollbar is visible */
+            overflow-y: scroll; 
         }
 
         h1 {
@@ -76,7 +74,6 @@
             border-bottom: none;
         }
 
-        /* Loading animation */
         .loading {
             font-style: italic;
             color: #777;
@@ -84,7 +81,14 @@
             margin-top: 20px;
         }
 
-        /* Custom scrollbar */
+        .zoeken {
+            margin-left: 15px;
+        }
+
+        .filtergebieden {
+            padding: 1px;
+        }
+
         body::-webkit-scrollbar {
             width: 10px;
         }
@@ -116,10 +120,10 @@
                 Vandaag geopend van: {{ parkOpeningTimes.open }} tot {{ parkOpeningTimes.close }}
             </p>
         </div>
-
+    
         <!-- Horeca opening times section -->
         <h2>Openingstijden Horeca Locaties</h2>
-        <select v-model="selectedArea">
+        <select v-model="selectedArea" class="filtergebieden">
             <option value="">Sorteer op gebied</option>
             <option value="">Alle gebieden</option>
             <option value="Magische Vallei">Magische Vallei</option>
@@ -129,7 +133,10 @@
             <option value="Port Laguna">Port Laguna</option>
             <option value="Wunderwald">Wunderwald</option>
         </select>
-        
+    
+        <!-- Zoekveld voor locaties -->
+        <input class="zoeken" type="text" v-model="searchText" placeholder="Zoek locatie...">
+    
         <div v-if="showLocationsLoadingMessage">
             <p class="loading">Openingstijden laden...</p>
         </div>
