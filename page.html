@@ -109,7 +109,6 @@
 </head>
 <body>
     <div id="app">
-        <!-- Park opening times section -->
         <h1>Openingstijden Park (vandaag)</h1>
         <div v-if="showParkLoadingMessage">
             <p class="loading">Park openingstijden laden...</p>
@@ -121,7 +120,6 @@
             </p>
         </div>
 
-        <!-- Horeca opening times section -->
         <h2>Openingstijden Horeca Locaties</h2>
         <select v-model="selectedArea" class="filtergebieden">
             <option value="">Sorteer op gebied</option>
@@ -134,10 +132,8 @@
             <option value="Wunderwald">Wunderwald</option>
         </select>
 
-        <!-- Zoekveld voor locaties -->
         <input class="zoeken" type="text" v-model="searchText" placeholder="Zoek locatie...">
 
-        <!-- Toevoegen van een checkbox voor open/gelosten locaties -->
         <br/>
         <label for="showOpenOnlyCheckbox">Alleen open locaties tonen:</label>
         <input id="showOpenOnlyCheckbox" type="checkbox" v-model="showOpenOnly">
