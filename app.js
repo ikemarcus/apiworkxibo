@@ -9,7 +9,6 @@ const app = Vue.createApp({
             showLocationsLoadingMessage: true,
             selectedArea: '',
             searchText: '',
-            // Ensure to define showOpenOnly in data
             showOpenOnly: false
         };
     },
@@ -28,7 +27,6 @@ const app = Vue.createApp({
                 const isInSelectedArea = !this.selectedArea || areaMappings[this.selectedArea]?.includes(location.id);
                 const matchesSearchText = !this.searchText || location.name.toLowerCase().includes(this.searchText.toLowerCase());
 
-                // Ensure showOpenOnly is accessible within computed property
                 const isOpen = this.showOpenOnly ? location.is_open : true;
 
                 return isInSelectedArea && matchesSearchText && isOpen;
