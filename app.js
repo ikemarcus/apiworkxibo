@@ -9,6 +9,8 @@ const app = Vue.createApp({
             showLocationsLoadingMessage: true,
             selectedArea: '',
             searchText: '',
+            // Nieuw dataveld voor filter op open/gelosten locaties
+            showOpenOnly: false
         };
     },
     computed: {
@@ -26,7 +28,10 @@ const app = Vue.createApp({
                 const isInSelectedArea = !this.selectedArea || areaMappings[this.selectedArea]?.includes(location.id);
                 const matchesSearchText = !this.searchText || location.name.toLowerCase().includes(this.searchText.toLowerCase());
 
-                return isInSelectedArea && matchesSearchText;
+                // Nieuwe voorwaarde voor open of gesloten locaties
+                const isOpen = this.showOpenOnly ? location.is_open : true;
+
+                return isInSelectedArea && matchesSearchText && isOpen;
             });
         },
     },
