@@ -137,6 +137,11 @@
         <!-- Zoekveld voor locaties -->
         <input class="zoeken" type="text" v-model="searchText" placeholder="Zoek locatie...">
 
+        <!-- Toevoegen van een checkbox voor open/gelosten locaties -->
+        <br/>
+        <label for="showOpenOnlyCheckbox">Alleen open locaties tonen:</label>
+        <input id="showOpenOnlyCheckbox" type="checkbox" v-model="showOpenOnly">
+
         <div v-if="showLocationsLoadingMessage">
             <p class="loading">Openingstijden laden...</p>
         </div>
